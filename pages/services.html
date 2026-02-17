@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services — Green Science</title>
+  <link rel="icon" href="../SS.ico">
+  <meta name="theme-color" content="#0a0f0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="Services — Green Science">
+  <meta property="og:description" content="Professional academic services: presentations, data analysis, tutoring, research assistance, poster design, and custom videos.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <noscript><div style="text-align:center;padding:80px 20px;font-family:sans-serif;color:#ccc;background:#0a0f0a;min-height:100vh"><h1 style="color:#2ECC71">Green Science</h1><p>JavaScript is required to use this site.</p></div></noscript>
+  <div class="bg-layer"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+  <div class="grain"></div>
+
+  <nav class="nav-bar" role="navigation" aria-label="Main navigation"><div class="nav-inner">
+    <a href="../index.html" class="nav-brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span data-i18n="siteName">Green Science</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+      <button class="search-btn" onclick="openSearch()" title="Search (Ctrl+K)" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <div class="lang-btns">
+        <button class="lang-btn active" onclick="setLang('en')" aria-label="English">EN</button>
+        <button class="lang-btn" onclick="setLang('fr')" aria-label="Français">FR</button>
+        <button class="lang-btn" onclick="setLang('ar')" aria-label="العربية">عربي</button>
+      </div>
+    </div>
+  </div></nav>
+
+  <main class="wrap" id="main" role="main"></main>
+
+<script src="../js/config.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/modules/soil.js"></script>
+<script src="../js/modules/plant.js"></script>
+<script src="../js/modules/climate.js"></script>
+<script src="../js/modules/stat.js"></script>
+<script src="../js/news.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+
+var sendSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+
+function onLangChange() { render(); }
+
+function render() {
+  document.title = tr('servicesTitle') + ' — Green Science';
+  var el = document.getElementById('main');
+  var h = '';
+
+  // Breadcrumb
+  h += '<div class="breadcrumb">' +
+    '<a href="' + ROOT + 'index.html">' + tr('backHome') + '</a>' +
+    '<span class="sep">›</span>' +
+    '<span class="current">' + tr('servicesTitle') + '</span></div>';
+
+  // Hero
+  h += '<div class="page-hero">' +
+    '<div class="page-icon" style="background:linear-gradient(135deg,#6366F1,#4F46E5)">💼</div>' +
+    '<div><h1 class="page-title">' + tr('servicesTitle') + '</h1>' +
+    '<p class="page-desc">' + tr('servicesDesc') + '</p></div></div>';
+
+  // Service cards
+  h += '<div class="services-grid">';
+  services.forEach(function(svc) {
+    var feats = svc.features[currentLang] || svc.features.en;
+    h += '<div class="service-card">';
+    h += '<div class="service-badge">' + tr('servicesComingSoon') + '</div>';
+    h += '<div class="service-card-header">';
+    h += '<div class="service-card-icon" style="background:' + svc.gradient + '">' + svc.icon + '</div>';
+    h += '<div class="service-card-title">' + localText(svc.title) + '</div>';
+    h += '</div>';
+    h += '<div class="service-card-desc">' + localText(svc.desc) + '</div>';
+    h += '<div class="service-card-features">';
+    feats.forEach(function(f) {
+      h += '<span class="service-feature-tag">' + f + '</span>';
+    });
+    h += '</div>';
+    h += buildSvcActions(svc);
+    h += '</div>';
+  });
+  h += '</div>';
+
+  // CTA + Contact form
+  h += '<div class="services-cta" id="contact">';
+  h += '<div class="services-cta-title">' + tr('servicesCtaTitle') + '</div>';
+  h += '<div class="services-cta-desc">' + tr('servicesCtaDesc') + '</div>';
+
+  h += '<div class="contact-form" id="contactForm">';
+  h += '<input class="contact-input" type="text" id="cfName" placeholder="' + tr('contactFormName') + '" />';
+  h += '<input class="contact-input" type="email" id="cfEmail" placeholder="' + tr('contactFormEmail') + '" />';
+  h += '<input class="contact-input full-width" type="text" id="cfSubject" placeholder="' + tr('contactFormSubject') + '" />';
+  h += '<textarea class="contact-textarea full-width" id="cfMsg" placeholder="' + tr('contactFormMsg') + '"></textarea>';
+  h += '</div>';
+
+  h += '<div id="formActions">';
+  h += '<button class="contact-submit" onclick="sendForm()">' + sendSvg + ' ' + tr('contactFormSend') + '</button>';
+  h += '</div>';
+
+  // Direct contact links
+  h += '<div class="services-contact-row">';
+  h += '<div style="width:100%;font-size:0.78rem;color:var(--text-muted);margin-bottom:4px;font-weight:600">' + tr('contactOrReach') + '</div>';
+  contactLinks.forEach(function(c) {
+    h += '<a class="contact-link" href="' + c.url + '" target="_blank" rel="noopener">' +
+      '<span class="contact-icon">' + c.icon + '</span>' +
+      '<span class="contact-label">' + localText(c.label) + '</span></a>';
+  });
+  h += '</div>';
+
+  h += '</div>'; // /services-cta
+
+  // Footer
+  h += '<footer><div style="margin-top:16px">&copy; 2025 Green Science &mdash; <a href="https://www.youtube.com/@greenscience-9226">' + tr('footerLink') + '</a></div></footer>';
+
+  el.innerHTML = h;
+}
+
+function sendForm() {
+  var name = (document.getElementById('cfName').value || '').trim();
+  var email = (document.getElementById('cfEmail').value || '').trim();
+  var subject = (document.getElementById('cfSubject').value || '').trim();
+  var msg = (document.getElementById('cfMsg').value || '').trim();
+
+  if (!name || !email || !msg) {
+    // Highlight empty fields
+    ['cfName','cfEmail','cfMsg'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && !el.value.trim()) {
+        el.style.borderColor = '#EF4444';
+        setTimeout(function() { el.style.borderColor = ''; }, 2000);
+      }
+    });
+    return;
+  }
+
+  // Compose mailto
+  var mailSubject = encodeURIComponent(subject || 'Service Request — Green Science');
+  var body = encodeURIComponent(
+    'Name: ' + name + '\n' +
+    'Email: ' + email + '\n\n' +
+    msg
+  );
+  window.open('mailto:' + serviceEmail + '?subject=' + mailSubject + '&body=' + body);
+
+  // Show success
+  var actions = document.getElementById('formActions');
+  if (actions) {
+    actions.innerHTML = '<div class="contact-sent">✓ ' + tr('contactFormSent') + '</div>';
+  }
+
+  // Clear form
+  ['cfName','cfEmail','cfSubject','cfMsg'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+setLang(initLang());
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Events — Green Science</title>
+  <link rel="icon" href="../SS.ico">
+  <meta name="theme-color" content="#0a0f0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="News & Events — Green Science">
+  <meta property="og:description" content="Latest news, events, seminars, and updates from Green Science.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <noscript><div style="text-align:center;padding:80px 20px;font-family:sans-serif;color:#ccc;background:#0a0f0a;min-height:100vh"><h1 style="color:#2ECC71">Green Science</h1><p>JavaScript is required to use this site.</p></div></noscript>
+  <div class="bg-layer"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+  <div class="grain"></div>
+
+  <nav class="nav-bar" role="navigation" aria-label="Main navigation"><div class="nav-inner">
+    <a href="../index.html" class="nav-brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span data-i18n="siteName">Green Science</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+      <button class="search-btn" onclick="openSearch()" title="Search (Ctrl+K)" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <div class="lang-btns">
+        <button class="lang-btn active" onclick="setLang('en')" aria-label="English">EN</button>
+        <button class="lang-btn" onclick="setLang('fr')" aria-label="Français">FR</button>
+        <button class="lang-btn" onclick="setLang('ar')" aria-label="العربية">عربي</button>
+      </div>
+    </div>
+  </div></nav>
+
+  <main class="wrap" id="main" role="main"></main>
+
+<script src="../js/config.js"></script>
+<script src="../js/i18n.js"></script>
+<script src="../js/data.js"></script>
+<script src="../js/modules/soil.js"></script>
+<script src="../js/modules/plant.js"></script>
+<script src="../js/modules/climate.js"></script>
+<script src="../js/modules/stat.js"></script>
+<script src="../js/news.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+
+var activeFilter = 'all';
+var searchQuery = '';
+var newsPage = 1;
+var NEWS_PER_PAGE = 6;
+
+function onLangChange() { render(); }
+
+function getTypeCounts() {
+  var counts = {};
+  newsItems.forEach(function(item) {
+    var t = item.type || 'news';
+    counts[t] = (counts[t] || 0) + 1;
+  });
+  return counts;
+}
+
+function getFilteredNews() {
+  var sorted = sortedNews();
+  return sorted.filter(function(item) {
+    if (activeFilter !== 'all' && (item.type || 'news') !== activeFilter) return false;
+    if (searchQuery) {
+      var q = searchQuery.toLowerCase();
+      var title = (localText(item.title) || '').toLowerCase();
+      var desc = (localText(item.desc) || '').toLowerCase();
+      var date = (item.date || '').toLowerCase();
+      if (title.indexOf(q) === -1 && desc.indexOf(q) === -1 && date.indexOf(q) === -1) return false;
+    }
+    return true;
+  });
+}
+
+function render() {
+  document.title = tr('newsAllTitle') + ' — Green Science';
+  var el = document.getElementById('main');
+  var h = '';
+
+  h += '<div class="breadcrumb">' +
+    '<a href="' + ROOT + 'index.html">' + tr('backHome') + '</a>' +
+    '<span class="sep">›</span>' +
+    '<span class="current">' + tr('newsAllTitle') + '</span></div>';
+
+  h += '<div class="page-hero">' +
+    '<div class="page-icon" style="background:linear-gradient(135deg,#2ECC71,#27AE60)">📰</div>' +
+    '<div><h1 class="page-title">' + tr('newsAllTitle') + '</h1>' +
+    '<p class="page-desc">' + newsItems.length + ' ' + tr('newsTitle').toLowerCase() + '</p></div></div>';
+
+  h += '<div class="news-toolbar">';
+  h += '<input class="news-search" type="text" placeholder="' + tr('newsSearchPh') + '" value="' + searchQuery.replace(/"/g, '&quot;') + '" oninput="searchQuery=this.value;newsPage=1;renderResults()" />';
+  h += '<div class="news-filters">';
+
+  var types = ['all', 'video', 'app', 'seminar', 'result', 'event', 'update', 'news'];
+  var counts = getTypeCounts();
+  types.forEach(function(t) {
+    var isActive = activeFilter === t;
+    var icon = t === 'all' ? '📋' : (newsTypeIcons[t] || '📰');
+    var label = t === 'all' ? tr('newsFilterAll') : tr(newsTypeKeys[t] || 'newsNews');
+    var count = t === 'all' ? newsItems.length : (counts[t] || 0);
+    if (t !== 'all' && count === 0) return;
+    h += '<button class="news-filter-btn' + (isActive ? ' active' : '') + '" onclick="setFilter(\'' + t + '\')">' + icon + ' ' + label + ' <span class="filter-count">(' + count + ')</span></button>';
+  });
+
+  h += '</div></div>';
+  h += '<div id="newsResults"></div>';
+  h += '<footer><div id="contactSlot"></div><div style="margin-top:16px">&copy; 2025 Green Science &mdash; <a href="https://www.youtube.com/@greenscience-9226">' + tr('footerLink') + '</a></div></footer>';
+
+  el.innerHTML = h;
+  renderContactLinks();
+  renderResults();
+}
+
+function renderResults() {
+  var container = document.getElementById('newsResults');
+  if (!container) return;
+
+  var filtered = getFilteredNews();
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:56px;height:56px;margin-bottom:12px;opacity:0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>' + tr('newsNoResults') + '</p></div>';
+    return;
+  }
+
+  var totalPages = Math.ceil(filtered.length / NEWS_PER_PAGE);
+  if (newsPage > totalPages) newsPage = totalPages;
+  if (newsPage < 1) newsPage = 1;
+
+  var start = (newsPage - 1) * NEWS_PER_PAGE;
+  var pageItems = filtered.slice(start, start + NEWS_PER_PAGE);
+
+  var h = '<div class="news-results-count">' + tr('newsTitle') + ' ' + (start + 1) + '–' + Math.min(start + NEWS_PER_PAGE, filtered.length) + ' ' + tr('pageOf') + ' ' + filtered.length + '</div>';
+  h += '<div class="news-grid">';
+  pageItems.forEach(function(item) {
+    h += buildNewsCard(item);
+  });
+  h += '</div>';
+
+  h += buildPagination(newsPage, totalPages, 'goNewsPage');
+
+  container.innerHTML = h;
+}
+
+function goNewsPage(p) {
+  newsPage = p;
+  renderResults();
+  var container = document.getElementById('newsResults');
+  if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function setFilter(type) {
+  activeFilter = type;
+  newsPage = 1;
+  render();
+  var input = document.querySelector('.news-search');
+  if (input) input.value = searchQuery;
+}
+
+setLang(initLang());
+</script>
+</body>
+</html>

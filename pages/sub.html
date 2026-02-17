@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Green Science — Sub-module</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta name="theme-color" content="#0a0f0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="Green Science — Sub-module">
+  <meta property="og:description" content="Topics, exercises, and resources for this sub-module.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <noscript><div style="text-align:center;padding:80px 20px;font-family:sans-serif;color:#ccc;background:#0a0f0a;min-height:100vh"><h1 style="color:#2ECC71">Green Science</h1><p>JavaScript is required to use this site.</p></div></noscript>
+  <div class="bg-layer"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+  <div class="grain"></div>
+
+  <nav class="nav-bar" role="navigation" aria-label="Main navigation"><div class="nav-inner">
+    <a href="../index.html" class="nav-brand">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <span data-i18n="siteName">Green Science</span>
+    </a>
+    <div class="nav-right">
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"><svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
+      <button class="search-btn" onclick="openSearch()" title="Search (Ctrl+K)" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <div class="lang-btns">
+        <button class="lang-btn active" onclick="setLang('en')" aria-label="English">EN</button>
+        <button class="lang-btn" onclick="setLang('fr')" aria-label="Français">FR</button>
+        <button class="lang-btn" onclick="setLang('ar')" aria-label="العربية">عربي</button>
+      </div>
+    </div>
+  </div></nav>
+
+  <main class="wrap" id="main" role="main"></main>
+
+<script src="../js/config.js"></script>
+
+<script src="../js/i18n.js"></script>
+
+<script src="../js/data.js"></script>
+
+<!-- Module data files -->
+
+<script src="../js/modules/soil.js"></script>
+
+<script src="../js/modules/plant.js"></script>
+
+<script src="../js/modules/climate.js"></script>
+
+<script src="../js/modules/stat.js"></script>
+
+<script src="../js/news.js"></script>
+<!-- Engine (must be last) -->
+
+<script src="../js/engine.js"></script>
+<script>
+const mod = findModule(getParam('mod'));
+const sub = findSub(mod, getParam('sub'));
+
+if (!mod || !sub) {
+  document.getElementById('main').innerHTML =
+    '<div class="empty-state" style="margin-top:60px"><p>Sub-module not found.</p>' +
+    '<a href="' + ROOT + 'index.html" style="color:var(--green-400);margin-top:12px;display:inline-block">← Back</a></div>';
+}
+
+function onLangChange() { if (sub) { var s = window.scrollY; render(); requestAnimationFrame(function(){ window.scrollTo(0, s); }); } }
+
+function render() {
+  document.title = localText(sub.title) + ' — Green Science';
+  const grad = catGradients[sub.category] || catGradients[mod.category] || catGradients.general;
+  if (!sub.courseFiles) sub.courseFiles = [];
+  if (!sub.books) sub.books = [];
+  if (!sub.exercises) sub.exercises = [];
+  if (!sub.topics) sub.topics = [];
+  const hasCF = sub.courseFiles && sub.courseFiles.length > 0;
+  const hasBooks = sub.books && sub.books.length > 0;
+  const hasEx = sub.exercises && sub.exercises.length > 0;
+  const el = document.getElementById('main');
+
+  let h = '';
+
+  // Breadcrumb
+  h += '<div class="breadcrumb">' +
+    '<a href="' + ROOT + 'index.html">' + tr('backHome') + '</a>' +
+    '<span class="sep">›</span>' +
+    '<a href="module.html?id=' + mod.id + '">' + localText(mod.title) + '</a>' +
+    '<span class="sep">›</span>' +
+    '<span class="current">' + localText(sub.title) + '</span></div>';
+
+  // Hero
+  h += '<div class="page-hero">' +
+    '<div class="page-icon" style="background:' + grad + '">' + sub.icon + '</div>' +
+    '<div><h1 class="page-title">' + localText(sub.title) + '</h1>' +
+    '<p class="page-desc">' + localText(sub.description) + '</p></div></div>';
+
+  // ── Topics grid ──
+  h += '<div class="section-label" style="margin-top:32px"><span>' + tr('topicsLabel') + '</span></div>';
+  h += '<div class="card-grid">';
+  if (sub.topics && sub.topics.length > 0) {
+    var sorted = sub.topics.slice().sort(function(a, b) { return (a.order || 999) - (b.order || 999); });
+    sorted.forEach(topic => {
+      const qc = topic.quizzes ? topic.quizzes.length : 0;
+      const cc = topic.courseFiles ? topic.courseFiles.length : 0;
+      const num = topic.order ? '<span class="topic-num">' + topic.order + '</span>' : '';
+      h += '<a href="topic.html?mod=' + mod.id + '&sub=' + sub.id + '&topic=' + topic.id + '" class="card">' +
+        '<div class="card-top">' +
+          '<div class="card-icon" style="background:' + grad + '">' + num + topic.icon + '</div>' +
+          '<div class="card-info">' +
+            '<div class="card-title">' + localText(topic.title) + '</div>' +
+            '<div class="card-desc">' + localText(topic.description) + '</div>' +
+          '</div></div>' +
+        '<div class="card-stats">' +
+          (qc > 0 ? '<span class="stat">' + tr('quizCount').replace('{n}', qc) + '</span>' : '') +
+          (cc > 0 ? '<span class="stat-dot">·</span><span class="stat">' + cc + ' ' + tr('courseSection').toLowerCase() + '</span>' : '') +
+          '<div class="card-arrow">' + arrowSvg + '</div>' +
+        '</div></a>';
+    });
+  } else {
+    h += '<div class="empty-state">' + tr('noContent') + '</div>';
+  }
+  h += '</div>';
+
+  // ── Shared Course Files (only if has data) ──
+  if (hasCF) {
+    h += '<div class="content-section">' +
+      '<div class="section-heading">' +
+        '<div class="section-heading-icon">📚</div>' +
+        '<h2>' + tr('courseSection') + '</h2>' +
+        '<span class="section-heading-count">' + sub.courseFiles.length + '</span>' +
+      '</div>' +
+      '<div id="cfList"></div></div>';
+  }
+
+  // ── Shared Exercises (TD & TP) ──
+  if (hasEx) {
+    h += '<div class="content-section">' +
+      '<div class="section-heading">' +
+        '<div class="section-heading-icon">✏️</div>' +
+        '<h2>' + tr('exercisesSection') + '</h2>' +
+        '<span class="section-heading-count">' + sub.exercises.length + '</span></div>' +
+      '<div class="row-list" id="exList"></div></div>';
+  }
+
+  // ── Shared Books ──
+  if (hasBooks) {
+    h += '<div class="content-section">' +
+      '<div class="section-heading">' +
+        '<div class="section-heading-icon">📖</div>' +
+        '<h2>' + tr('booksSection') + '</h2>' +
+        '<span class="section-heading-count">' + sub.books.length + '</span></div>' +
+      '<div id="bkList"></div></div>';
+  }
+
+  // Footer
+  h += '<footer><div id="contactSlot"></div><div style="margin-top:16px">&copy; 2025 Green Science &mdash; <a href="https://www.youtube.com/@greenscience-9226">' + tr('footerLink') + '</a></div></footer>';
+
+  el.innerHTML = h;
+  renderContactLinks();
+
+  // Render course files
+  if (hasCF) {
+    const cfWrap = document.getElementById('cfList');
+    const list = document.createElement('div'); list.className = 'row-list';
+    sub.courseFiles.forEach(cf => {
+      const r = document.createElement('div'); r.className = 'row-item';
+      r.innerHTML = '<div class="row-icon">' + (cf.icon || '📄') + '</div>' +
+        '<div class="row-info"><div class="row-title">' + localText(cf.title) + '</div></div>' +
+        '<a href="' + cf.file + '" download class="row-dl">' + dlSvg + ' ' + tr('download') + '</a>';
+      list.appendChild(r);
+    });
+    cfWrap.appendChild(list);
+  }
+
+  // Render exercises (TD & TP)
+  if (hasEx) {
+    const list = document.getElementById('exList');
+    sub.exercises.forEach((ex, i) => {
+      const r = document.createElement('div'); r.className = 'row-item';
+      r.style.flexWrap = 'wrap';
+      const badge = '<span class="ex-type-badge ' + (ex.type || 'td') + '">' + tr(ex.type === 'tp' ? 'tpLabel' : ex.type === 'other' ? 'otherLabel' : 'tdLabel') + '</span>';
+      const vidBtn = (ex.videoId) ? '<button class="ex-video-toggle" onclick="toggleExVideo(\'sub-ex-' + i + '\',\'' + ex.videoId + '\', this, event)">' + ytSvg + '</button>' : '';
+      r.innerHTML = '<div class="row-icon">' + (ex.icon || (ex.type === 'tp' ? '🔬' : ex.type === 'other' ? '📋' : '✏️')) + '</div>' +
+        '<div class="row-info"><div class="row-title">' + localText(ex.title) + '</div></div>' +
+        badge + vidBtn +
+        '<a href="' + ex.file + '" download class="row-dl">' + dlSvg + ' ' + tr('download') + '</a>' +
+        '<div id="sub-ex-' + i + '" class="ex-video-slot" style="width:100%;display:none"></div>';
+      list.appendChild(r);
+    });
+  }
+
+  // Render books (card grid with covers)
+  if (hasBooks) {
+    const wrap = document.getElementById('bkList');
+    const grid = document.createElement('div'); grid.className = 'book-grid';
+    const booksToShow = sub.books.length > BOOKS_INLINE_LIMIT ? sub.books.slice(0, BOOKS_INLINE_LIMIT) : sub.books;
+    booksToShow.forEach(bk => {
+      const card = document.createElement('div'); card.className = 'book-card';
+      const coverHtml = bk.cover
+        ? '<img class="book-cover" src="' + ROOT + bk.cover + '" alt="' + localText(bk.title) + '" loading="lazy" onerror="coverFallback(this)">'
+        : '<div class="book-cover book-cover-placeholder">' + (bk.icon || '📕') + '</div>';
+      const auth = bk.author ? '<div class="book-author">' + tr('bookBy') + ' ' + localText(bk.author) + '</div>' : '';
+      card.innerHTML = coverHtml +
+        '<div class="book-card-info"><div class="book-card-title">' + localText(bk.title) + '</div>' + auth + '</div>' +
+        '<a href="' + bk.file + '" download class="book-card-dl">' + dlSvg + ' ' + tr('download') + '</a>';
+      grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+    if (sub.books.length > BOOKS_INLINE_LIMIT) {
+      wrap.insertAdjacentHTML('beforeend', '<div class="books-view-all"><a href="books.html">' + tr('booksViewAll') + ' (' + sub.books.length + ')</a></div>');
+    }
+  }
+}
+
+if (sub) setLang(initLang());
+</script>
+</body>
+</html>
